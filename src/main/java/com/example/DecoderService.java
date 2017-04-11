@@ -1,16 +1,13 @@
 package com.example;
 
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.LuminanceSource;
-import com.google.zxing.MultiFormatReader;
-import com.google.zxing.Result;
+import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.File;
@@ -18,28 +15,50 @@ import java.io.File;
 
 @Service
 public class DecoderService {
-    public String decode(String realImgPath){
-        BufferedImage image = null;
-        Result result = null;
-        try {
-            image = ImageIO.read(new File(realImgPath));
-            if (image == null) {
-                System.out.println("the decode image may be not exit.");
-            }
-            LuminanceSource source = new BufferedImageLuminanceSource(image);
-            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+    private static final String CHARSET = "utf-8";
 
-            Map<DecodeHintType, Object> hints = new HashMap<DecodeHintType, Object>();
-            hints.put(DecodeHintType.CHARACTER_SET, "utf-8");
+    String decodeService(String realImgPath){
+
+        File file = new File(realImgPath);
+
+        BufferedImage bufferedImage = null;
+
+        try {
+
+            bufferedImage = ImageIO.read(file);
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        }
+
+        if (bufferedImage == null){
+            return null;
+        }
+
+        LuminanceSource source = new BufferedImageLuminanceSource(bufferedImage);
+        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+        Map<DecodeHintType, Object> hints = new HashMap<DecodeHintType, Object>();
+        hints.put(DecodeHintType.CHARACTER_SET, CHARSET);
+
+        Result result = null;
+
+        try {
 
             result = new MultiFormatReader().decode(bitmap, hints);
-            return result.getText();
-        } catch (Exception e) {
+
+        } catch (NotFoundException e) {
+
             e.printStackTrace();
+
         }
         if (result == null) {
             return null;
         }
-        return result.getText() ;
+
+        return result.toString();
+
     }
 }
