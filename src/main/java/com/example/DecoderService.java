@@ -15,9 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.io.File;
 
-/**
- * Created by Julian on 2017/3/3.
- */
+
 @Service
 public class DecoderService {
     public String decode(String realImgPath){
@@ -38,6 +36,9 @@ public class DecoderService {
             return result.getText();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if (result == null) {
+            return null;
         }
         return result.getText() ;
     }

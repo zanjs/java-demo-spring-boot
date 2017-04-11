@@ -11,15 +11,16 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.File;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
-/**
- * Created by Julian on 2017/3/3.
- */
+
 @RestController
 public class Decode {
 
-    private DecoderService decoderService;
+//    private DecoderService decoderService;
+    private static final String CHARSET = "utf-8";
 
     @RequestMapping("/decode")
     public String decode(){
@@ -38,13 +39,15 @@ public class Decode {
 
         }
 
-        LuminanceSource source = new BufferedImageLuminanceSource(bufferedImage);
+        if (bufferedImage == null){
+            return null;
+        }
 
+        LuminanceSource source = new BufferedImageLuminanceSource(bufferedImage);
         BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
-        Hashtable<DecodeHintType, String> hints = new Hashtable<DecodeHintType, String>();
-
-        hints.put(DecodeHintType.CHARACTER_SET, "GBK");
+        Map<DecodeHintType, Object> hints = new HashMap<DecodeHintType, Object>();
+        hints.put(DecodeHintType.CHARACTER_SET, CHARSET);
 
         Result result = null;
 
@@ -57,7 +60,12 @@ public class Decode {
             e.printStackTrace();
 
         }
+        if (result == null) {
+            return null;
+        }
 
         return result.toString();
     }
+
+
 }
