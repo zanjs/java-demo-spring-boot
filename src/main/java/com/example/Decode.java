@@ -1,13 +1,13 @@
 package com.example;
 
-import org.springframework.http.HttpRequest;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.net.ssl.HandshakeCompletedEvent;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 
@@ -15,12 +15,13 @@ import java.io.*;
 @RestController
 public class Decode {
 
-    private DecoderService decoderService;
+    private DecoderService decoderService = new DecoderService();
+
     private static final String FilePath = "E://code.jpg";
 
     @RequestMapping(value = "decode", method = RequestMethod.GET)
     public String decode(){
-        return new DecoderService().decodeService(FilePath);
+        return this.decoderService.decodeService(FilePath);
     }
 
     @RequestMapping(value = "decode", method = RequestMethod.POST)
@@ -57,7 +58,7 @@ public class Decode {
 
 
 
-        return new DecoderService().decodeService(rootPath + name);
+        return this.decoderService.decodeService(rootPath + name);
     }
 
 
